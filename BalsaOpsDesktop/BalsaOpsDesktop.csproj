@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>balsa.ico</ApplicationIcon>
+    <AssemblyName>Balsa Construction Ops</AssemblyName>
+    <RootNamespace>BalsaOpsDesktop</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- If Visual Studio can't find this exact version, open
+         Tools > NuGet Package Manager > Manage NuGet Packages for Solution,
+         search "Microsoft.Web.WebView2", and install/update to latest —
+         any recent 1.0.x release works fine here. -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="balsa.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
