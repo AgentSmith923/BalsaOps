@@ -1985,7 +1985,7 @@ function renderProjects(){
         </div>
         <div class="paddr">${ICONS.pin} ${esc(p.ProjectAddress)}</div>
         ${complianceBadges(p)}
-        <div class="prow"><span>Status</span><span><span class="pill green"><span class="pill-dot"></span>${esc(p.ProjectStatus)==='Yes' ? 'Active' : esc(p.ProjectStatus)}</span></span></div>
+        <div class="prow"><span>Status</span><span><span class="pill ${p.ProjectStatus==='Yes'?'green':'gray'}"><span class="pill-dot"></span>${p.ProjectStatus==='Yes' ? 'Active' : 'Closed'}</span></span></div>
         <div class="prow"><span>Trades out to bid</span><span>${tradesOut}</span></div>
         <div class="prow"><span>Awarded value</span><span>${money(awarded)}</span></div>
       </div>`;
@@ -3467,7 +3467,10 @@ function bindAddEditButtons(){
     });
   });
   document.querySelectorAll('[data-award]').forEach(el=>{
-    el.addEventListener('click', async ()=>{
+    // bindOnce (not plain addEventListener): bindAddEditButtons runs twice per
+    // render — once from bindEvents, once at the tail of bindContentFilterEvents —
+    // so a plain listener would fire the award twice and create two subcontracts.
+    bindOnce(el, 'click', async ()=>{
       const id = el.getAttribute('data-award');
       el.disabled = true;
       try{
@@ -3480,7 +3483,7 @@ function bindAddEditButtons(){
     });
   });
   document.querySelectorAll('[data-approve-pco]').forEach(el=>{
-    el.addEventListener('click', async ()=>{
+    bindOnce(el, 'click', async ()=>{
       const id = el.getAttribute('data-approve-pco');
       el.disabled = true;
       try{
@@ -3493,13 +3496,13 @@ function bindAddEditButtons(){
     });
   });
   document.querySelectorAll('[data-contact]').forEach(el=>{
-    el.addEventListener('click', ()=>{
+    bindOnce(el, 'click', ()=>{
       const id = el.getAttribute('data-contact');
       openEmailComposer([id]);
     });
   });
   document.querySelectorAll('[data-toggle-flag]').forEach(el=>{
-    el.addEventListener('click', async ()=>{
+    bindOnce(el, 'click', async ()=>{
       const field = el.getAttribute('data-toggle-flag');
       const id = el.getAttribute('data-sub-id');
       const sub = DATA.subcontracts.find(s=>s.SubcontractID===id);

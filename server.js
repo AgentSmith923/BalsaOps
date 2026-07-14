@@ -13,7 +13,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
-app.use('/uploads', express.static(UPLOADS_DIR));
+// Uploaded files are attacker-controllable content served from the app's own
+// origin. Two guards keep a malicious upload from running as a script in that
+// origin: (1) nosniff stops the browser from re-interpreting, say, a .txt as
+// HTML; (2) HTML/SVG/XML — the types that can carry inline script — are forced
+// to download instead of render. PDFs and images still open inline as the UI
+// expects.
+const INLINE_UNSAFE_EXT = new Set(['.html', '.htm', '.xhtml', '.svg', '.xml']);
+app.use('/uploads', express.static(UPLOADS_DIR, {
+  setHeaders(res, filePath) {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    if (INLINE_UNSAFE_EXT.has(path.extname(filePath).toLowerCase())) {
+      res.setHeader('Content-Disposition', 'attachment');
+    }
+  }
+}));
 
 // File attachments (drag-and-drop proposals/invoices/change orders): the
 // browser sends the raw file bytes with the original filename in a header;
