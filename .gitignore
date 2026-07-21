@@ -19,3 +19,15 @@ BalsaOpsDesktop/obj/
 # OS junk files.
 .DS_Store
 Thumbs.db
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Build outputs
+bin/
+obj/
+
+# User files
+*.user
+*.suo
